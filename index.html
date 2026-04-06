@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Nós ❤️</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: black;
+      color: white;
+      text-align: center;
+    }
+
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: linear-gradient(to top, black, transparent),
+                  url('https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2');
+      background-size: cover;
+    }
+
+    h1 {
+      font-size: 3em;
+      animation: fadeIn 3s;
+    }
+
+    p {
+      font-size: 1.5em;
+      animation: fadeIn 5s;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+
+    .gallery img {
+      width: 200px;
+      margin: 10px;
+      border-radius: 15px;
+    }
+
+    button {
+      padding: 15px;
+      font-size: 1em;
+      border: none;
+      border-radius: 10px;
+      background: pink;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="hero">
+  <h1>O nosso amor ❤️</h1>
+  <p id="contador"></p>
+</div>
+
+<h2>Memórias 📸</h2>
+<div class="gallery" id="gallery"></div>
+
+<button onclick="upload()">Adicionar memória</button>
+
+<input type="file" id="fileInput" hidden>
+
+<script>
+  // DATA DE INÍCIO (MUDA ISTO!)
+  const startDate = new Date("2024-04-07");
+
+  function atualizarContador() {
+    const hoje = new Date();
+    const diff = hoje - startDate;
+    const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+    document.getElementById("contador").innerText =
+      `Estamos juntos há ${dias} dias 💖`;
+  }
+
+  atualizarContador();
+
+  function upload() {
+    document.getElementById("fileInput").click();
+  }
+
+  document.getElementById("fileInput").addEventListener("change", function(e) {
+    const file = e.target.files[0];
+    const url = URL.createObjectURL(file);
+
+    const img = document.createElement("img");
+    img.src = url;
+
+    document.getElementById("gallery").appendChild(img);
+  });
+</script>
+
+</body>
+</html>
