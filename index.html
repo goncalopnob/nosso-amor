@@ -157,10 +157,20 @@ window.onload = function () {
 
   // adicionar imagem
   function addImage(url) {
-    const img = document.createElement("img");
-    img.src = url;
-    gallery.appendChild(img);
-  }
+  const img = document.createElement("img");
+
+  // imagem leve primeiro (placeholder)
+  img.style.opacity = "0";
+  img.style.transition = "0.5s";
+
+  img.onload = () => {
+    img.style.opacity = "1";
+  };
+
+  img.src = url.replace("/upload/", "/upload/w_400,q_auto/");
+
+  gallery.appendChild(img);
+}
 
   // iniciar
   loadImages();
