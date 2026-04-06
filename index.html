@@ -68,34 +68,63 @@
 
 <input type="file" id="fileInput" hidden>
 
-<script>
-  // DATA DE INÍCIO (MUDA ISTO!)
-  const startDate = new Date("2024-04-07");
+<script type="module">
+  // IMPORTS FIREBASE
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL, listAll } 
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
-  function atualizarContador() {
-    const hoje = new Date();
-    const diff = hoje - startDate;
-    const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-    document.getElementById("contador").innerText =
-      `Estamos juntos há ${dias} dias 💖`;
-  }
+  // CONFIG (O TEU)
+  const firebaseConfig = {
+    apiKey: "AIzaSyCgSnfOY0HdWrhhpr1vNZBeV9YiVu-OSY",
+    authDomain: "nosso-amor-4a907.firebaseapp.com",
+    projectId: "nosso-amor-4a907",
+    storageBucket: "nosso-amor-4a907.appspot.com",
+    messagingSenderId: "891196431251",
+    appId: "1:891196431251:web:ffd57c880567bc5743e666"
+  };
 
-  atualizarContador();
+  // INIT
+  const app = initializeApp(firebaseConfig);
+  const storage = getStorage(app);
 
-  function upload() {
-    document.getElementById("fileInput").click();
-  }
+  const fileInput = document.getElementById("fileInput");
+  const gallery = document.getElementById("gallery");
 
-  document.getElementById("fileInput").addEventListener("change", function(e) {
+  // UPLOAD
+  fileInput.addEventListener("change", async (e) => {
     const file = e.target.files[0];
-    const url = URL.createObjectURL(file);
+    const storageRef = ref(storage, "fotos/" + file.name);
 
+    await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(storageRef);
+
+    addImage(url);
+  });
+
+  function addImage(url) {
     const img = document.createElement("img");
     img.src = url;
+    gallery.appendChild(img);
+  }
 
-    document.getElementById("gallery").appendChild(img);
-  });
+  // CARREGAR IMAGENS EXISTENTES
+  async function loadImages() {
+    const listRef = ref(storage, "fotos/");
+    const res = await listAll(listRef);
+
+    res.items.forEach(async (itemRef) => {
+      const url = await getDownloadURL(itemRef);
+      addImage(url);
+    });
+  }
+
+  loadImages();
+
+  // BOTÃO
+  window.upload = function () {
+    fileInput.click();
+  };
 </script>
-
 </body>
 </html>
