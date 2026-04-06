@@ -69,9 +69,100 @@
 <input type="file" id="fileInput" hidden>
 
 <script>
-function upload() {
-  alert("botão funciona");
+const cloudName = "dmdszvcmf";
+const uploadPreset = "unsigned_preset";
+
+const BIN_ID = "69d39e51856a6821890401bd";
+const API_KEY = "$2a$10$Ixhs4dMS2Q8SMB6Yrc9tFufSiswuDzSPk/wNG7SAf5zYiZdNMr3Bm";
+
+const gallery = document.getElementById("gallery");
+
+// 🔄 carregar imagens
+async function loadImages() {
+  try {
+    gallery.innerHTML = "";
+
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+      headers: { "X-Master-Key": API_KEY }
+    });
+
+    const data = await res.json();
+    const fotos = data.record.fotos || [];
+
+    fotos.forEach(url => addImage(url));
+
+  } catch (e) {
+    console.log("erro ao carregar", e);
+  }
 }
+
+// 💾 guardar imagem
+async function saveImage(url) {
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+      headers: { "X-Master-Key": API_KEY }
+    });
+
+    const data = await res.json();
+    const fotos = data.record.fotos || [];
+
+    fotos.push(url);
+
+    await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Master-Key": API_KEY,
+        "X-Bin-Versioning": "false"
+      },
+      body: JSON.stringify({ fotos })
+    });
+
+  } catch (e) {
+    console.log("erro ao guardar", e);
+  }
+}
+
+// 📸 upload
+function upload() {
+  const input = document.createElement("input");
+  input.type = "file";
+
+  input.onchange = async function () {
+    try {
+      const file = input.files[0];
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", uploadPreset);
+
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await res.json();
+
+      addImage(data.secure_url);
+      saveImage(data.secure_url);
+
+    } catch (e) {
+      console.log("erro upload", e);
+    }
+  };
+
+  input.click();
+}
+
+// ➕ adicionar imagem
+function addImage(url) {
+  const img = document.createElement("img");
+  img.src = url;
+  gallery.appendChild(img);
+}
+
+// 🚀 iniciar
+loadImages();
 </script>
 
 </body>
