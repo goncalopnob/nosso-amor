@@ -66,7 +66,7 @@
 
 <button onclick="upload()">Adicionar memória</button>
 
-<input type="file" id="fileInput" hidden>
+<input type="file" id="fileInput" accept="image/*" capture="environment" hidden>
 
 <script>
 const cloudName = "dmdszvcmf";
@@ -125,35 +125,36 @@ async function saveImage(url) {
 
 // 📸 upload
 function upload() {
-  const input = document.createElement("input");
-  input.type = "file";
-
-  input.onchange = async function () {
-    try {
-      const file = input.files[0];
-
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", uploadPreset);
-
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-        method: "POST",
-        body: formData
-      });
-
-      const data = await res.json();
-
-      addImage(data.secure_url);
-      saveImage(data.secure_url);
-
-    } catch (e) {
-      console.log("erro upload", e);
-    }
-  };
-
-  input.click();
+  document.getElementById("fileInput").click();
 }
 
+const gallery = document.getElementById("gallery");
+
+const fileInput = document.getElementById("fileInput");
+
+fileInput.onchange = async function () {
+  try {
+    const file = fileInput.files[0];
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", uploadPreset);
+
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await res.json();
+
+    addImage(data.secure_url);
+    saveImage(data.secure_url);
+
+  } catch (e) {
+    console.log("erro upload", e);
+  }
+};
+  
 // ➕ adicionar imagem
 function addImage(url) {
   const img = document.createElement("img");
