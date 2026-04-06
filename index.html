@@ -131,7 +131,7 @@ function upload() {
     const data = await res.json();
 
     addImage(data.secure_url);
-    saveImage(data.secure_url); // 🔥 guarda online
+    await saveImage(data.secure_url); // 🔥 guarda online
   };
 
   input.click();
