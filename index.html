@@ -116,27 +116,34 @@ function upload() {
   const input = document.createElement("input");
   input.type = "file";
 
-  input.onchange = async () => {
-    const file = input.files[0];
+  input.onchange = async function () {
+    try {
+      const file = input.files[0];
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", uploadPreset);
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", uploadPreset);
 
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-      method: "POST",
-      body: formData
-    });
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+        method: "POST",
+        body: formData
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    addImage(data.secure_url);
-    await saveImage(data.secure_url); // 🔥 guarda online
+      addImage(data.secure_url);
+
+      // 👇 GUARDA MAS NÃO BLOQUEIA
+      saveImage(data.secure_url);
+
+    } catch (err) {
+      console.error("Erro:", err);
+      alert("Erro no upload");
+    }
   };
 
   input.click();
 }
-
 // ➕ adicionar imagem
 function addImage(url) {
   const img = document.createElement("img");
