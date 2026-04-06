@@ -68,76 +68,38 @@
 
 <input type="file" id="fileInput" hidden>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getStorage, ref, uploadBytes, getDownloadURL, listAll } 
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+<script>
+const cloudName = "dmdszvcmf";
+const uploadPreset = "unsigned_preset";
 
-  // CONFIG
-  const firebaseConfig = {
-    apiKey: "AIzaSyCgSnfOY0HdWrhhpr1vNZBeV9YiVu-OSY",
-    authDomain: "nosso-amor-4a907.firebaseapp.com",
-    projectId: "nosso-amor-4a907",
-    storageBucket: "nosso-amor-4a907.appspot.com",
-    messagingSenderId: "891196431251",
-    appId: "1:891196431251:web:ffd57c880567bc5743e666"
-  };
+const gallery = document.getElementById("gallery");
 
-  const app = initializeApp(firebaseConfig);
-  const storage = getStorage(app);
+function upload() {
+  const input = document.createElement("input");
+  input.type = "file";
 
-  const fileInput = document.getElementById("fileInput");
-  const gallery = document.getElementById("gallery");
+  input.onchange = async () => {
+    const file = input.files[0];
 
-  // 📅 CONTADOR (VOLTOU!)
-  const startDate = new Date("2024-04-06");
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", uploadPreset);
 
-  function atualizarContador() {
-    const hoje = new Date();
-    const diff = hoje - startDate;
-    const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-    document.getElementById("contador").innerText =
-      `Estamos juntos há ${dias} dias 💖`;
-  }
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+      method: "POST",
+      body: formData
+    });
 
-  atualizarContador();
+    const data = await res.json();
 
-  // 📸 UPLOAD
-  fileInput.addEventListener("change", async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const storageRef = ref(storage, "fotos/" + Date.now() + "-" + file.name);
-
-    await uploadBytes(storageRef, file);
-    const url = await getDownloadURL(storageRef);
-
-    addImage(url);
-  });
-
-  function addImage(url) {
     const img = document.createElement("img");
-    img.src = url;
+    img.src = data.secure_url;
     gallery.appendChild(img);
-  }
-
-  // 🔄 CARREGAR IMAGENS
-  async function loadImages() {
-    const listRef = ref(storage, "fotos/");
-    const res = await listAll(listRef);
-
-    for (const itemRef of res.items) {
-      const url = await getDownloadURL(itemRef);
-      addImage(url);
-    }
-  }
-
-  loadImages();
-
-  // 🔘 BOTÃO (IMPORTANTE PARA FUNCIONAR!)
-  window.upload = function () {
-    fileInput.click();
   };
+
+  input.click();
+}
 </script>
+
 </body>
 </html>
