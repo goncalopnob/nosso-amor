@@ -69,34 +69,27 @@
 <input type="file" id="fileInput" hidden>
 
 <script>
-
 const cloudName = "dmdszvcmf";
 const uploadPreset = "unsigned_preset";
 
 const gallery = document.getElementById("gallery");
 
-// 🔁 CARREGAR IMAGENS GUARDADAS
-function loadImages() {
-  const saved = JSON.parse(localStorage.getItem("fotos")) || [];
+// carregar imagens guardadas
+window.onload = function () {
+  const fotos = JSON.parse(localStorage.getItem("fotos")) || [];
 
-  saved.forEach(url => {
-    addImage(url);
+  fotos.forEach(url => {
+    const img = document.createElement("img");
+    img.src = url;
+    gallery.appendChild(img);
   });
-}
+};
 
-// 💾 GUARDAR IMAGEM
-function saveImage(url) {
-  const saved = JSON.parse(localStorage.getItem("fotos")) || [];
-  saved.push(url);
-  localStorage.setItem("fotos", JSON.stringify(saved));
-}
-
-// 📸 UPLOAD
 function upload() {
   const input = document.createElement("input");
   input.type = "file";
 
-  input.onchange = async () => {
+  input.onchange = async function () {
     const file = input.files[0];
 
     const formData = new FormData();
@@ -110,22 +103,19 @@ function upload() {
 
     const data = await res.json();
 
-    addImage(data.secure_url);
-    saveImage(data.secure_url); // 👈 GUARDA!
+    // adicionar imagem
+    const img = document.createElement("img");
+    img.src = data.secure_url;
+    gallery.appendChild(img);
+
+    // guardar no localStorage
+    const fotos = JSON.parse(localStorage.getItem("fotos")) || [];
+    fotos.push(data.secure_url);
+    localStorage.setItem("fotos", JSON.stringify(fotos));
   };
 
   input.click();
 }
-
-// ➕ ADICIONAR À GALERIA
-function addImage(url) {
-  const img = document.createElement("img");
-  img.src = url;
-  gallery.appendChild(img);
-}
-
-// 🚀 INICIAR
-loadImages();
 </script>
 </body>
 </html>
