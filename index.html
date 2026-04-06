@@ -69,11 +69,29 @@
 <input type="file" id="fileInput" hidden>
 
 <script>
+
 const cloudName = "dmdszvcmf";
 const uploadPreset = "unsigned_preset";
 
 const gallery = document.getElementById("gallery");
 
+// 🔁 CARREGAR IMAGENS GUARDADAS
+function loadImages() {
+  const saved = JSON.parse(localStorage.getItem("fotos")) || [];
+
+  saved.forEach(url => {
+    addImage(url);
+  });
+}
+
+// 💾 GUARDAR IMAGEM
+function saveImage(url) {
+  const saved = JSON.parse(localStorage.getItem("fotos")) || [];
+  saved.push(url);
+  localStorage.setItem("fotos", JSON.stringify(saved));
+}
+
+// 📸 UPLOAD
 function upload() {
   const input = document.createElement("input");
   input.type = "file";
@@ -92,14 +110,22 @@ function upload() {
 
     const data = await res.json();
 
-    const img = document.createElement("img");
-    img.src = data.secure_url;
-    gallery.appendChild(img);
+    addImage(data.secure_url);
+    saveImage(data.secure_url); // 👈 GUARDA!
   };
 
   input.click();
 }
-</script>
 
+// ➕ ADICIONAR À GALERIA
+function addImage(url) {
+  const img = document.createElement("img");
+  img.src = url;
+  gallery.appendChild(img);
+}
+
+// 🚀 INICIAR
+loadImages();
+</script>
 </body>
 </html>
