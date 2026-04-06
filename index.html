@@ -64,6 +64,25 @@
       background: pink;
       cursor: pointer;
     }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    
+    .modal img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 15px;
+    }
   </style>
 </head>
 
@@ -92,7 +111,14 @@ window.onload = function () {
 
   const gallery = document.getElementById("gallery");
   const fileInput = document.getElementById("fileInput");
-
+  const modal = document.getElementById("modal");
+  const modalImg = document.getElementById("modalImg");
+  
+  // fechar ao clicar fora
+  modal.onclick = () => {
+    modal.style.display = "none";
+  };
+  
   // 🔄 carregar imagens
   async function loadImages() {
     try {
@@ -172,15 +198,21 @@ window.onload = function () {
   function addImage(url) {
   const img = document.createElement("img");
 
-  // imagem leve primeiro (placeholder)
   img.style.opacity = "0";
-  img.style.transition = "0.5s";
+  img.style.transform = "scale(0.9)";
 
   img.onload = () => {
     img.style.opacity = "1";
+    img.style.transform = "scale(1)";
   };
 
   img.src = url.replace("/upload/", "/upload/w_400,q_auto/");
+
+  // 👇 NOVO — abrir em grande
+  img.onclick = () => {
+    modal.style.display = "flex";
+    modalImg.src = url;
+  };
 
   gallery.appendChild(img);
 }
@@ -189,6 +221,10 @@ window.onload = function () {
   loadImages();
 };
 </script>
+  
+<div id="modal" class="modal">
+  <img id="modalImg">
+</div>
 
 </body>
 </html>
