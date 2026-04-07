@@ -208,14 +208,9 @@ window.onload = function () {
   // 💾 guardar imagem
   async function saveImage(url, texto) {
   try {
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-      headers: { "X-Master-Key": API_KEY }
-    });
+    let fotos = imagens || [];
 
-    const data = await res.json();
-    let fotos = data.record.fotos || [];
-
-    // 🔥 converter fotos antigas para novo formato
+    // converter para formato correto
     fotos = fotos.map(f => {
       if (typeof f === "string") {
         return { url: f, texto: "" };
@@ -224,6 +219,9 @@ window.onload = function () {
     });
 
     fotos.push({ url, texto });
+
+    // atualizar variável global também
+    imagens = fotos;
 
     await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
       method: "PUT",
@@ -260,6 +258,7 @@ window.onload = function () {
 
       addImage(data.secure_url, texto);
       saveImage(data.secure_url, texto);
+      loadImages();
 
     } catch (e) {
       console.log("erro upload", e);
