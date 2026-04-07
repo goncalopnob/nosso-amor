@@ -137,9 +137,11 @@ nextBtn.onclick = () => {
   let indexAtual = 0;
   
   // fechar ao clicar fora
-  modal.onclick = () => {
+  modal.onclick = (e) => {
+  if (e.target === modal) {
     modal.style.display = "none";
-  };
+  }
+};
   
   // 🔄 carregar imagens
   async function loadImages() {
