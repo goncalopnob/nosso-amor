@@ -100,6 +100,9 @@ window.onload = function () {
   const fileInput = document.getElementById("fileInput");
   const modal = document.getElementById("modal");
   const modalImg = document.getElementById("modalImg");
+
+  let imagens = [];
+  let indexAtual = 0;
   
   // fechar ao clicar fora
   modal.onclick = () => {
@@ -117,6 +120,8 @@ window.onload = function () {
 
       const data = await res.json();
       const fotos = data.record.fotos || [];
+
+      imagens = fotos;
 
       fotos.forEach(url => addImage(url));
 
@@ -183,6 +188,8 @@ window.onload = function () {
 
   // adicionar imagem
   function addImage(url) {
+  const index = gallery.children.length;
+
   const img = document.createElement("img");
 
   img.style.opacity = "0";
@@ -195,17 +202,42 @@ window.onload = function () {
 
   img.src = url.replace("/upload/", "/upload/w_400,q_auto/");
 
-  // 👇 NOVO — abrir em grande
   img.onclick = () => {
-    modal.style.display = "flex";
-    modalImg.src = url;
+    indexAtual = index;
+    abrirModal();
   };
 
   gallery.appendChild(img);
 }
 
+
   // iniciar
   loadImages();
+
+  function abrirModal() {
+    modal.style.display = "flex";
+    modalImg.src = imagens[indexAtual];
+  }
+
+  let startX = 0;
+
+  modal.addEventListener("touchstart", e => {
+    startX = e.touches[0].clientX;
+  });
+  
+  modal.addEventListener("touchend", e => {
+    let endX = e.changedTouches[0].clientX;
+  
+    if (endX < startX - 50) {
+      indexAtual = (indexAtual + 1) % imagens.length;
+      abrirModal();
+    }
+  
+    if (endX > startX + 50) {
+      indexAtual = (indexAtual - 1 + imagens.length) % imagens.length;
+      abrirModal();
+    }
+  });
 };
 </script>
   
