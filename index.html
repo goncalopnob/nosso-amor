@@ -122,6 +122,7 @@ window.onload = function () {
   const modalImg = document.getElementById("modalImg");
   const prevBtn = document.getElementById("prevBtn");
   const nextBtn = document.getElementById("nextBtn");
+  const modalText = document.getElementById("modalText");
 
   prevBtn.onclick = () => { 
   indexAtual = (indexAtual - 1 + imagens.length) % imagens.length;
@@ -157,7 +158,13 @@ nextBtn.onclick = () => {
 
       imagens = fotos;
 
-      fotos.forEach(url => addImage(url));
+      fotos.forEach(foto => {
+        if (typeof foto === "string") {
+          addImage(foto, "");
+        } else {
+          addImage(foto.url, foto.texto);
+        }
+      });
 
     } catch (e) {
       console.log("erro ao carregar", e);
@@ -165,31 +172,31 @@ nextBtn.onclick = () => {
   }
 
   // 💾 guardar imagem
-  async function saveImage(url) {
-    try {
-      const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-        headers: { "X-Master-Key": API_KEY }
-      });
+  async function saveImage(url, texto) {
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+      headers: { "X-Master-Key": API_KEY }
+    });
 
-      const data = await res.json();
-      const fotos = data.record.fotos || [];
+    const data = await res.json();
+    const fotos = data.record.fotos || [];
 
-      fotos.push(url);
+    fotos.push({ url, texto });
 
-      await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Master-Key": API_KEY,
-          "X-Bin-Versioning": "false"
-        },
-        body: JSON.stringify({ fotos })
-      });
+    await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Master-Key": API_KEY,
+        "X-Bin-Versioning": "false"
+      },
+      body: JSON.stringify({ fotos })
+    });
 
-    } catch (e) {
-      console.log("erro ao guardar", e);
-    }
+  } catch (e) {
+    console.log("erro ao guardar", e);
   }
+}
 
   // 📸 upload via input real (TELEMÓVEL OK)
   fileInput.onchange = async function () {
@@ -207,8 +214,10 @@ nextBtn.onclick = () => {
 
       const data = await res.json();
 
-      addImage(data.secure_url);
-      saveImage(data.secure_url);
+      const texto = prompt("Escreve uma legenda ❤️");
+
+      addImage(data.secure_url, texto);
+      saveImage(data.secure_url, texto);
 
     } catch (e) {
       console.log("erro upload", e);
@@ -221,18 +230,10 @@ nextBtn.onclick = () => {
   };
 
   // adicionar imagem
-  function addImage(url) {
+  function addImage(url, texto) {
   const index = gallery.children.length;
 
   const img = document.createElement("img");
-
-  img.style.opacity = "0";
-  img.style.transform = "scale(0.9)";
-
-  img.onload = () => {
-    img.style.opacity = "1";
-    img.style.transform = "scale(1)";
-  };
 
   img.src = url.replace("/upload/", "/upload/w_400,q_auto/");
 
@@ -249,9 +250,15 @@ nextBtn.onclick = () => {
   loadImages();
 
   function abrirModal() {
-    modal.style.display = "flex";
-    modalImg.src = imagens[indexAtual];
-  }
+  const foto = imagens[indexAtual];
+
+  const url = typeof foto === "string" ? foto : foto.url;
+  const texto = typeof foto === "string" ? "" : foto.texto;
+
+  modal.style.display = "flex";
+  modalImg.src = url;
+  modalText.innerText = texto;
+}
 
   let startX = 0;
 
@@ -277,7 +284,12 @@ nextBtn.onclick = () => {
   
 <div id="modal" class="modal">
   <span id="prevBtn" class="arrow">❮</span>
-  <img id="modalImg">
+
+  <div style="text-align:center">
+    <img id="modalImg">
+    <p id="modalText"></p>
+  </div>
+
   <span id="nextBtn" class="arrow">❯</span>
 </div>
 
