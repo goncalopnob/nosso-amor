@@ -90,6 +90,16 @@
       right: 10px;
     }
     
+    #deleteBtn {
+      margin-top: 10px;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      background: red;
+      color: white;
+      cursor: pointer;
+    }
+    
   </style>
 </head>
 
@@ -123,15 +133,39 @@ window.onload = function () {
   const prevBtn = document.getElementById("prevBtn");
   const nextBtn = document.getElementById("nextBtn");
   const modalText = document.getElementById("modalText");
+  const deleteBtn = document.getElementById("deleteBtn");
 
   prevBtn.onclick = () => { 
-  indexAtual = (indexAtual - 1 + imagens.length) % imagens.length;
-  abrirModal();
-};
+    indexAtual = (indexAtual - 1 + imagens.length) % imagens.length;
+    abrirModal();
+  };
 
-nextBtn.onclick = () => {
-  indexAtual = (indexAtual + 1) % imagens.length;
-  abrirModal();
+  nextBtn.onclick = () => {
+    indexAtual = (indexAtual + 1) % imagens.length;
+    abrirModal();
+  };
+
+  deleteBtn.onclick = async () => {
+  if (!confirm("Tens a certeza que queres apagar esta memória? 😢")) return;
+
+  // remover da lista
+  imagens.splice(indexAtual, 1);
+
+  // guardar nova lista no JSONBin
+  await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Master-Key": API_KEY
+    },
+    body: JSON.stringify({ fotos: imagens })
+  });
+
+  // fechar modal
+  modal.style.display = "none";
+
+  // recarregar galeria
+  loadImages();
 };
   
   let imagens = [];
@@ -288,6 +322,7 @@ nextBtn.onclick = () => {
   <div style="text-align:center">
     <img id="modalImg">
     <p id="modalText"></p>
+    <button id="deleteBtn">🗑️ Apagar</button>
   </div>
 
   <span id="nextBtn" class="arrow">❯</span>
