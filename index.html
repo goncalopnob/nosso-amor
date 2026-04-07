@@ -70,6 +70,26 @@
       max-height: 90%;
       border-radius: 15px;
     }
+
+    .arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 40px;
+      color: white;
+      cursor: pointer;
+      padding: 10px;
+      user-select: none;
+    }
+    
+    #prevBtn {
+      left: 10px;
+    }
+    
+    #nextBtn {
+      right: 10px;
+    }
+    
   </style>
 </head>
 
@@ -100,7 +120,19 @@ window.onload = function () {
   const fileInput = document.getElementById("fileInput");
   const modal = document.getElementById("modal");
   const modalImg = document.getElementById("modalImg");
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
 
+  prevBtn.onclick = () => { 
+  indexAtual = (indexAtual - 1 + imagens.length) % imagens.length;
+  abrirModal();
+};
+
+nextBtn.onclick = () => {
+  indexAtual = (indexAtual + 1) % imagens.length;
+  abrirModal();
+};
+  
   let imagens = [];
   let indexAtual = 0;
   
@@ -242,7 +274,9 @@ window.onload = function () {
 </script>
   
 <div id="modal" class="modal">
+  <span id="prevBtn" class="arrow">❮</span>
   <img id="modalImg">
+  <span id="nextBtn" class="arrow">❯</span>
 </div>
 
 </body>
