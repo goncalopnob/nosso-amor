@@ -213,7 +213,15 @@ window.onload = function () {
     });
 
     const data = await res.json();
-    const fotos = data.record.fotos || [];
+    let fotos = data.record.fotos || [];
+
+    // 🔥 converter fotos antigas para novo formato
+    fotos = fotos.map(f => {
+      if (typeof f === "string") {
+        return { url: f, texto: "" };
+      }
+      return f;
+    });
 
     fotos.push({ url, texto });
 
