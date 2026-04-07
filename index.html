@@ -129,15 +129,76 @@
     #deleteBtn:active {
       transform: scale(0.95);
     }
-        
+
+    .carta {
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 20px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 30px rgba(255, 182, 193, 0.2);
+    }
+    
+    .carta p {
+      margin: 10px 0;
+      line-height: 1.6;
+      color: white;
+    
+      opacity: 0;
+      transform: translateY(20px);
+      animation: aparecer 1s forwards;
+    }
+    
+    /* delay em cascata (cada linha aparece depois) */
+    .carta p:nth-child(1) { animation-delay: 0.3s; }
+    .carta p:nth-child(2) { animation-delay: 0.8s; }
+    .carta p:nth-child(3) { animation-delay: 1.3s; }
+    .carta p:nth-child(4) { animation-delay: 1.8s; }
+    .carta p:nth-child(5) { animation-delay: 2.3s; }
+    .carta p:nth-child(6) { animation-delay: 2.8s; }
+    .carta p:nth-child(7) { animation-delay: 3.3s; }
+    .carta p:nth-child(8) { animation-delay: 3.8s; }
+    
+    @keyframes aparecer {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .assinatura {
+      margin-top: 20px;
+      font-style: italic;
+      opacity: 0.8;
+    }
+    
   </style>
 </head>
 
 <body>
 
 <div class="hero">
-  <h1>O nosso amor ❤️</h1>
+  <h1>O NOSSO AMOR ❤️</h1>
   <p id="contador"></p>
+</div>
+  <div class="carta">
+  <p>Meu amor ❤️</p>
+
+  <p>Nem sei bem por onde começar… porque tudo o que sinto por ti é maior do que qualquer palavra que eu consiga escrever.</p>
+
+  <p>Desde o dia em que entraste na minha vida, tudo ganhou mais cor, mais sentido, mais vida. És o meu lugar seguro, o meu sorriso nos dias difíceis, a pessoa que transforma o normal em algo especial.</p>
+
+  <p>Cada memória que temos aqui guardada não é só uma fotografia… é um pedaço da nossa história, um momento em que fomos felizes juntos — e ainda somos, todos os dias.</p>
+
+  <p>Gosto de nós. Gosto da forma como nos olhamos, como nos entendemos, como crescemos lado a lado. Gosto da tua maneira de ser, dos teus detalhes, das tuas imperfeições que, para mim, são perfeitas.</p>
+
+  <p>Obrigado por estares comigo, por me escolheres todos os dias, por fazeres parte da minha vida de uma forma tão única.</p>
+
+  <p>E se há uma coisa que eu sei com toda a certeza… é que quero continuar a criar memórias contigo, mais e mais, sem fim.</p>
+
+  <p><strong>Amo-te MUITOOOO ❤️</strong></p>
+  <p class="assinatura">— Gonçalo Brotinho 💌</p>
 </div>
 
 <h2>Memórias 📸</h2>
