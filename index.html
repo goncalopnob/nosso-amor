@@ -129,6 +129,30 @@ window.onload = function () {
   const gallery = document.getElementById("gallery");
   const fileInput = document.getElementById("fileInput");
   const modal = document.getElementById("modal");
+  const dataInicio = new Date("2024-04-07");
+
+  function atualizarContador() {
+    const agora = new Date();
+  
+    let anos = agora.getFullYear() - dataInicio.getFullYear();
+    let meses = agora.getMonth() - dataInicio.getMonth();
+    let dias = agora.getDate() - dataInicio.getDate();
+  
+    if (dias < 0) {
+      meses--;
+      dias += new Date(agora.getFullYear(), agora.getMonth(), 0).getDate();
+    }
+  
+    if (meses < 0) {
+      anos--;
+      meses += 12;
+    }
+  
+    const texto = `Estamos juntos há ${anos} anos, ${meses} meses e ${dias} dias ❤️`;
+  
+    document.getElementById("contador").innerText = texto;
+  }
+  
   const modalImg = document.getElementById("modalImg");
   const prevBtn = document.getElementById("prevBtn");
   const nextBtn = document.getElementById("nextBtn");
@@ -289,6 +313,9 @@ window.onload = function () {
 
   // iniciar
   loadImages();
+
+  atualizarContador();
+  setInterval(atualizarContador, 60000); // atualiza a cada minuto
 
   function abrirModal() {
   const foto = imagens[indexAtual];
